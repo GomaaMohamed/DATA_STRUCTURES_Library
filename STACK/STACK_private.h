@@ -4,13 +4,16 @@
 /* Version :V01                        */
 /***************************************/
 
-#ifndef _LIST_PRIVATE_H_
-#define _LIST_PRIVATE_H_
+#ifndef _STACK_PRIVATE_H_
+#define _STACK_PRIVATE_H_
 
-typedef struct listnode{
-	struct listnode *next;
-	List_Entry entry;
-}ListNode;
+
+#define ARRAY_BASED  0
+#define LINKED_BASED 1 
+
+
+
+
 
 
 #endif

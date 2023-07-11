@@ -4,10 +4,11 @@
 /* Version :V01                        */
 /***************************************/
 
-#ifndef _QUEUE_CONFIG_H_
-#define _QUEUE_CONFIG_H_
+#ifndef _LIST_PRIVATE_H_
+#define _v_PRIVATE_H_
 
-typedef u8 Queue_Entry;
+#define L_ARRAY_BASED  0
+#define L_LINKED_BASED 1 
 
 
 #endif
