@@ -28,3 +28,9 @@
 >> To configure the library to use array-based implementations, you must define the
    IMPLEMENTATION_METHOD macro located in STACK_config.h, QUEUE_config.h, and LIST_config.h.
 ```
+## License
+```
+This library is released under the GNU GPL License ↗. Feel free to use it in your own projects, 
+modify it, and distribute it as needed. If you find any issues or have suggestions for
+improvement, please open an issue or submit a pull request.
+```
