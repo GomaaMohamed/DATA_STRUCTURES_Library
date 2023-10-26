@@ -1,171 +1,275 @@
-/***************************************/
-/* Author  :Gomaa                      */
-/* Date    :1 Aug 2020                */
-/* Version :V01                        */
-/***************************************/
+/*****************************************************************************
+* @file:    LIST_program.c
+* @author:  Copyright (c) 2023 Gomaa Mohammed Gomaa.
+* @license: GNU GPL version 3 or later.
+*			This is free software: you are free to change and redistribute it.  
+*			There is NO WARRANTY, to the extent permitted by law.
+* @version: V0.2   
+* @date:    Tue, 3 Oct 2023 16:21:12 +0200
+* @brief:   List module: Array based and Linked based methods are supported
+******************************************************************************/
 
-#include <stdlib.h>
+/* ==================================================================== */
+/* ========================== Include Files =========================== */
+/* ==================================================================== */ 
+
+#include  "stdlib.h"
 #include  "LIST_private.h"
 #include  "LIST_interface.h"
 
+/* ==================================================================== */
+/* ================= Public Functions Implementation ================== */
+/* ==================================================================== */
+
+// Array based implementations
 #if L_IMPLEMENTATION_METHOD == L_ARRAY_BASED
-void LIST_InitializeList(List *pl)
+
+// Function to initialize a list
+void LIST_initializeList(List_type *ptrList)
 {
-	pl->List_Size = 0;
+	// Size of list equal 0 at beginning
+	ptrList->ListSize = 0;
 }
-void LIST_Insert(u32 P, List_Entry e,List *pl)
+
+// Function to insert an element
+void LIST_insertElement(ListEntry_type Element, u32 Position,List_type *ptrList)
 {
-	if (pl->List_Size == 0)
+	// Check boundries
+	if (ptrList->ListSize == 0)
 	{
-		pl->entry[P] = e;
+		ptrList->Entry[Position] = Element;
 	}
-	else{
-	u32 i;
-	for(i=pl->List_Size-1;i >= P;i--){
-		pl->entry[i+1] = pl->entry[i];
+	else
+	{
+		// Loop counter
+		u32 i;
+		// Determine the position
+		for(i=ptrList->ListSize-1;i >= Position;i--)
+		{
+			ptrList->Entry[i+1] = ptrList->Entry[i];
+		}
+		// Assign value
+		ptrList->Entry[Position] = Element;
 	}
-	pl->entry[P] = e;
-	}
-	pl->List_Size++;
+	// Increase size by one
+	ptrList->ListSize++;
 }
-List_Entry LIST_DeleteElement(u32 P,List *pl)
+
+// Function to get an element from the list
+ListEntry_type LIST_deleteElement(u32 Position, List_type *ptrList)
 {    
-    List_Entry temp = pl->entry[P];
+	// Temp variable
+    ListEntry_type Temp = ptrList->Entry[Position];
+	// Counter
 	u32 i;
-	for(i=P+1;i <= pl->List_Size-1 ;i++){
-		pl->entry[i-1] = pl->entry[i];
-	}
-	pl->List_Size--;
-	return temp;
-}
-u8 LIST_IsFull(List *pl)
-{
-	return (pl->List_Size == MAX_LIST);
-}
-u8 LIST_IsEmpty(List *pl)
-{
-	return !pl->List_Size;
-}
-u32 LIST_CurrentSize(List *pl)
-{
-	return pl->List_Size;
-}
-void LIST_DestroyList(List *pl)
-{
-	 pl->List_Size = 0;
-}
-List_Entry LIST_RetrieveElement(u32 P,List *pl)
-{
-	return pl->entry[P];
-}
-void LIST_ReplaceElement(u32 P, List_Entry e,List *pl)
-{
-	pl->entry[P] = e ;
-}
-void LIST_TraverseList(List *pl,void (*pf)(List_Entry))
-{
-	for(u32 i = 0; i<pl->List_Size; i++)
+	// Determine the position
+	for(i=Position+1;i <= ptrList->ListSize-1 ;i++)
 	{
-		(*pf)(pl->entry[i]);
+		ptrList->Entry[i-1] = ptrList->Entry[i];
+	}
+	// Decrement size by 1
+	ptrList->ListSize--;
+	return Temp;
+}
+
+// Function to check if the list is full
+u8 LIST_isFull(List_type *ptrList)
+{
+	return (ptrList->ListSize == MAX_LIST);
+}
+
+// Function to check if the list is empty
+u8 LIST_isEmpty(List_type *ptrList)
+{
+	return !ptrList->ListSize;
+}
+
+// Function to get the size of list
+u32 LIST_getCurrentSize(List_type *ptrList)
+{
+	return ptrList->ListSize;
+}
+
+// Function to destroy list
+void LIST_destroyList(List_type *ptrList)
+{
+	ptrList->ListSize = 0;
+}
+
+// Function to retrieve an element
+ListEntry_type LIST_retrieveElement(u32 Position,List_type *ptrList)
+{
+	return ptrList->Entry[Position];
+}
+
+// Function to replace an element
+void LIST_replaceElement( ListEntry_type Element,u32 Position,List_type *ptrList)
+{
+	ptrList->Entry[Position] = Element ;
+}
+
+// Function to traverse list
+void LIST_traverseList(List_type *ptrList,void (*ptrFunction)(ListEntry_type))
+{
+	// Loop on all elements
+	for(u32 i = 0; i<ptrList->ListSize; i++)
+	{
+		(*ptrFunction)(ptrList->Entry[i]);
 	}
 }
+
+
+// Linked based implementations
 #elif L_IMPLEMENTATION_METHOD == L_LINKED_BASED
-void LIST_InitializeList(List *pl)
+
+// Function to initialize a list
+void LIST_initializeList(List_type *ptrList)
 {   
-    pl->head = NULL;
-	pl->List_Size = 0;
+    ptrList->ptrHead = NULL;
+	ptrList->ListSize = 0;
 }
-void LIST_Insert(u32 P, List_Entry e,List *pl)
+
+// Function to insert an element
+void LIST_insertElement(ListEntry_type Element, u32 Position,List_type *ptrList)
 {
-	ListNode *temp1,*temp2;
+	// Temp pointers to catch the nodes without memory leakage
+	ListNode_type *Temp1,*Temp2;
+	// Counter
 	u32 i;
-	temp1 = (ListNode *)malloc(sizeof(ListNode));
-	temp1->entry = e;
-	temp1->next = NULL;
-	if(P == 0){
-		temp1->next = pl->head;
-		pl->head = temp1;
+	// Allocate a memory for the new node to be inserted
+	Temp1 = (ListNode_type *)malloc(sizeof(ListNode_type));
+	// Assigen the element to the new node
+	Temp1->Entry = Element;
+	// Make the next pointer of the new node to point to nothing
+	Temp1->ptrNext = NULL;
+	// Check boundries
+	if(Position == 0)
+	{
+		Temp1->ptrNext = ptrList->ptrHead;
+		ptrList->ptrHead = Temp1;
 	}
-	else{
-	for(temp2=pl->head,i=0;i<P-1;i++){
-		temp2 = temp2->next;
+	else
+	{
+		// Determine the position to insert the new node at
+		for(Temp2=ptrList->ptrHead,i=0;i<Position-1;i++)
+		{
+			Temp2 = Temp2->ptrNext;
+		}
+		Temp1->ptrNext = Temp2->ptrNext;
+		Temp2->ptrNext = Temp1;
 	}
-	    temp1->next = temp2->next;
-		temp2->next = temp1;
-	}
-	pl->List_Size++;
+	// Increment size of the list by 1
+	ptrList->ListSize++;
 }
-List_Entry LIST_DeleteElement(u32 P,List *pl)
-{    
-    ListNode *temp1,*temp2;
-	List_Entry temp;
+
+// Function to get an element from the list
+ListEntry_type LIST_deleteElement(u32 Position, List_type *ptrList)
+{   
+	// Temp pointers to catch the nodes without memory leakage
+    ListNode_type *Temp1,*Temp2;
+	ListEntry_type Temp;
+	// Counter
 	u32 i;
-	if(P == 0){
-		temp = pl->head->entry;
-		temp1 = pl->head->next;
-		free(pl->head);
-		pl->head = temp1;
+	// Check boundries
+	if(Position == 0)
+	{
+		Temp = ptrList->ptrHead->Entry;
+		Temp1 = ptrList->ptrHead->ptrNext;
+		free(ptrList->ptrHead);
+		ptrList->ptrHead = Temp1;
 	}
-	else{
-	for(temp1=pl->head,i=0;i<P-1;i++){
-		temp1 = temp1->next;
+	else
+	{
+		// Determine the position to delete the node at
+		for(Temp1=ptrList->ptrHead,i=0;i<Position-1;i++)
+		{
+			Temp1 = Temp1->ptrNext;
+		}
+	    Temp = Temp1->ptrNext->Entry ;
+		Temp2 = Temp1->ptrNext;
+		Temp1->ptrNext = Temp2->ptrNext;
+		free(Temp2);
 	}
-	    temp = temp1->next->entry ;
-		temp2 = temp1->next;
-		temp1->next = temp2->next;
-		free(temp2);
-	}
-	
-	pl->List_Size--;
-	return temp;
+	// Decrement list size
+	ptrList->ListSize--;
+	// Return deleted node
+	return Temp;
 }
-u8 LIST_IsFull(List *pl)//
+
+
+// Function to check if the list is full
+u8 LIST_isFull(List_type *ptrList)
 {
 	return 0;
 }
-u8 LIST_IsEmpty(List *pl)//
+
+// Function to check if the list is empty
+u8 LIST_isEmpty(List_type *ptrList)
 {
-	return !pl->List_Size;
+	return !ptrList->ListSize;
 }
-u32 LIST_CurrentSize(List *pl)//
+
+// Function to get the size of list
+u32 LIST_getCurrentSize(List_type *ptrList)
 {
-	return pl->List_Size;
+	return ptrList->ListSize;
 }
-void LIST_DestroyList(List *pl)//
+
+// Function to destroy list
+void LIST_destroyList(List_type *ptrList)
 {
-	 ListNode *temp;
-	 while(pl->head){
-		 temp = pl->head->next;
-		 free(pl->head);
-		 pl->head = temp;
-	 }
-	 pl->List_Size = 0;
-}
-List_Entry LIST_RetrieveElement(u32 P,List *pl)
-{ 
-    ListNode *temp;
-	u32 i;
-	for(temp=pl->head,i=0;i<P;i++){	
-	  temp = temp->next;
-	}
-	return temp->entry;
-}
-void LIST_ReplaceElement(u32 P, List_Entry e,List *pl)
-{
-	ListNode *temp;
-	u32 i;
-	for(temp=pl->head,i=0;i<P;i++){	
-	  temp = temp->next;
-	}
-	temp->entry = e;
-}
-void LIST_TraverseList(List *pl,void (*pf)(List_Entry))//
-{
-	ListNode *temp = pl->head;
-	while(temp)
+	// Auxilary pointer
+	ListNode_type *Temp;
+	while(ptrList->ptrHead)
 	{
-		(*pf)(temp->entry);
-		temp = temp->next;
+		Temp = ptrList->ptrHead->ptrNext;
+		free(ptrList->ptrHead);
+		ptrList->ptrHead = Temp;
+	}
+	ptrList->ListSize = 0;
+}
+
+
+// Function to retrieve an element
+ListEntry_type LIST_retrieveElement(u32 Position,List_type *ptrList)
+{
+	// Auxilary pointer 
+    ListNode_type *Temp;
+	// Counter
+	u32 i;
+	// Loop on the list nodes
+	for(Temp=ptrList->ptrHead,i=0;i<Position;i++)
+	{	
+		Temp = Temp->ptrNext;
+	}
+	return Temp->Entry;
+}
+
+// Function to replace an element
+void LIST_replaceElement( ListEntry_type Element,u32 Position,List_type *ptrList)
+{
+	// Auxilary pointer
+	ListNode_type *Temp;
+	// Counter
+	u32 i;
+	// Loop on the list nodes
+	for(Temp=ptrList->ptrHead,i=0;i<Position;i++)
+	{	
+		Temp = Temp->ptrNext;
+	}
+	Temp->Entry = Element;
+}
+
+// Function to traverse list
+void LIST_traverseList(List_type *ptrList,void (*ptrFunction)(ListEntry_type))
+{
+	// Auxilary pointer
+	ListNode_type *Temp = ptrList->ptrHead;
+	// loop on all list nodes
+	while(Temp)
+	{
+		(*ptrFunction)(Temp->Entry);
+		Temp = Temp->ptrNext;
 	}
 }
 #endif

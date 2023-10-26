@@ -1,11 +1,15 @@
-/***************************************/
-/* Author  :Gomaa                      */
-/* Date    :1 Aug 2021                 */
-/* Version :V01                        */
-/***************************************/
-
-#ifndef _QUEUE_CONFIG_H_
-#define _QUEUE_CONFIG_H_
+/*****************************************************************************
+* @file:    QUEUE_config.h
+* @author:  Copyright (c) 2023 Gomaa Mohammed Gomaa.
+* @license: GNU GPL version 3 or later.
+*			   This is free software: you are free to change and redistribute it.  
+*			   There is NO WARRANTY, to the extent permitted by law.
+* @version: V0.2   
+* @date:    Tue, 3 Oct 2023 16:21:12 +0200
+* @brief:   Queue module: Array based and Linked based methods are supported
+******************************************************************************/
+#ifndef _QUEUE_CONFIG_H
+#define _QUEUE_CONFIG_H
 
 #include  "QUEUE_private.h"
 
@@ -21,10 +25,11 @@
 
 // if the ARRAY_BASED method is selected, you have to define the size of array 
 #if Q_IMPLEMENTATION_METHOD == Q_ARRAY_BASED
-#define MAX_QUEUE 100
+   // Determine queue size
+   #define MAX_QUEUE 100
 #endif
 
 // define the type of the element that will be pushed
-typedef u8 Queue_Entry;
+typedef u8 QueueEntry_type;
 
 #endif

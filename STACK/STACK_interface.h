@@ -1,139 +1,147 @@
-/***************************************/
-/* Author  :Gomaa                      */
-/* Date    :1 Aug 2021                 */
-/* Version :V01                        */
-/***************************************/
-
+/*****************************************************************************
+* @file:    STACK_interface.h
+* @author:  Copyright (c) 2023 Gomaa Mohammed Gomaa.
+* @license: GNU GPL version 3 or later.
+*			This is free software: you are free to change and redistribute it.  
+*			There is NO WARRANTY, to the extent permitted by law.
+* @version: V0.2   
+* @date:    Tue, 3 Oct 2023 16:21:12 +0200
+* @brief:   Stack module: Array based and Linked based methods are supported
+******************************************************************************/
 #ifndef _STACK_INTERFACE_H_
 #define _STACK_INTERFACE_H_
 
 #include  "STD_TYPES.h"
 #include  "BIT_MATH.h"
-
 #include  "STACK_config.h"
 
-
 /* ==================================================================== */
-/* ======================= public data types ========================== */
+/* ======================= Public Data Types ========================== */
 /* ==================================================================== */
 
 /* Stack type Definition */
 #if IMPLEMENTATION_METHOD == ARRAY_BASED
-typedef struct stack{
-	u32 top;
-	Stack_Entry entry[MAX_STACK];
-}Stack;
+typedef struct stack
+{
+	u32 Top;
+	StackEntry_type Entry[MAX_STACK];
+}Stack_type;
 #elif IMPLEMENTATION_METHOD == LINKED_BASED
-typedef struct stacknode{
-	Stack_Entry entry;
-	struct stacknode *next;
-}StackNode;
-typedef struct stack{
-	StackNode *top;
-	u32 Stack_Size;
-}Stack;
+typedef struct stacknode
+{
+	StackEntry_type Entry;
+	struct stacknode *ptrNext;
+}StackNode_type;
+typedef struct stack
+{
+	StackNode_type *Top;
+	u32 StackSize;
+}Stack_type;
 #endif
 
 /* ==================================================================== */
-/* ==================== public functions Declaration ================== */
+/* ==================== Public Functions Declaration ================== */
 /* ==================================================================== */
 
 /**
- * @brief   initialize the stack
- * @param   ps pointer to the stack that will be initialized
- * @return  None
- * @example
- *          ex:   Stack s1;
- *                STACK_InitializeStack(&s1);
- */ 
-void STACK_InitializeStack(Stack *ps);
-
-/**
- * @brief   push an element in the stack
- * @param   e the element that will be pushed in the stack
- * @param   ps pointer to the stack that the element will be pushed inside 
- * @return  none
- * @pre     stack is initialized and not full
- * @example
- *          ex:   Stack s1;
- *                STACK_Push(5,&s1);
- */ 
-u8 STACK_Push(Stack_Entry e,Stack *ps);
-
-/**
- * @brief   Pop an element from the stack
- * @param   e the element that will be poped from the stack
- * @param   ps pointer to the stack that the element will be poped from 
- * @return  the poped element
- * @pre     stack is initialized and not empty
- * @example
- *          ex:   Stack s1;
- *                STACK_Push(5,&s1);
- */ 
-Stack_Entry STACK_Pop(Stack *ps);
-
-/**
- * @brief   check if the stack is full or not
- * @return  1 if the stack is full else it returns 0
- * @pre     stack is initialized 
- * @example
- *          ex:   u8 check;
- *                check = STACK_IsFull(&s1);
- */ 
-u8 STACK_IsFull(Stack *ps);
-
-/**
- * @brief   Check if the stack is empty or not
- * @return  1 if the stack is empty else it returns 0
- * @pre     stack is initialized 
- * @example
- *          ex:   u8 check;
- *                STACK_IsEmpty(5,&s1);
- */ 
-u8 STACK_IsEmpty(Stack *ps);
-
-/**
- * @brief   get the top element from the stack
- * @param   ps pointer to the stack that the element will be taken from 
- * @return  the taken element
- * @pre     stack is initialized and not empty
- * @example
- *          ex:   u8 element;
- *               element = STACK_Top(&s1);
- */ 
-Stack_Entry STACK_Top(Stack *ps);
-
-/**
- * @brief   get the current size of the stack
- * @param   ps pointer to the stack that its size will be taken 
- * @return  stack size
- * @pre     stack is initialized 
- * @example
- *          ex:   u32 size;
- *                size = STACK_CurrentSize(&s1);
- */ 
-u32 STACK_CurrentSize(Stack *ps);
-
-/**
- * @brief   clear the stack
- * @param   ps pointer to the stack that will be cleared 
- * @return  none
- * @pre     stack is initialized 
- * @example
- *          ex:   STACK_ClearStack(&s1);
+ * @brief---------------------> Initialize stack
+ * @parameter1----------------> (ptrStack) pointer to the stack to be initialized
+ * @return--------------------> None
+ * @preconditions-------------> None
+ * @postconditions------------> None
+ * @synchronous/asynchronous--> Synchronous
+ * @reentrant/non-reentrant---> Reentrant 
  */
-void STACK_ClearStack(Stack *ps);
+void STACK_initializeStack(Stack_type *ptrStack);
 
 /**
- * @brief   traverse all elements of the stack
- * @param   ps pointer to the stack that will be traversed
- * @param   pf pointer to the function that will be performed on the stack elements
- * @return  none
- * @pre     stack is initialized 
- * @example
- *          ex:   Stack s1;  
- *                STACK_TraverseStack(&s1,func);
+ * @brief---------------------> Push an element in the stack
+ * @parameter1----------------> (Element) the element that will be pushed in the stack
+ * @parameter2----------------> (ptrStack) pointer to the stack
+ * @return--------------------> None
+ * @preconditions-------------> Stack is initialized
+ * @postconditions------------> None
+ * @synchronous/asynchronous--> Synchronous
+ * @reentrant/non-reentrant---> Non-Reentrant 
+ */
+void STACK_pushElement(StackEntry_type Element, Stack_type *ptrStack);
+
+/**
+ * @brief---------------------> Pop an element from the stack
+ * @parameter1----------------> (ptrStack) pointer to the stack
+ * @return--------------------> Element
+ * @preconditions-------------> Stack is initialized
+ * @postconditions------------> None
+ * @synchronous/asynchronous--> Synchronous
+ * @reentrant/non-reentrant---> Non-Reentrant 
+ */
+StackEntry_type STACK_PopElement(Stack_type *ptrStack);
+
+/**
+ * @brief---------------------> Check if the stack is full or not
+ * @parameter1----------------> (ptrStack) pointer to the stack be checked
+ * @return--------------------> 1 if it is full else it return 0
+ * @preconditions-------------> Stack is initialized
+ * @postconditions------------> None
+ * @synchronous/asynchronous--> Synchronous
+ * @reentrant/non-reentrant---> Non-Reentrant 
  */ 
-void STACK_TraverseStack(Stack *ps,void (*pf)(Stack_Entry));
+u8 STACK_isFull(Stack_type *ptrStack);
+
+/**
+ * @brief---------------------> Check if the stack is empty or not
+ * @parameter1----------------> (ptrStack) pointer to the stack be checked
+ * @return--------------------> 1 if it is full else it return 0
+ * @preconditions-------------> Stack is initialized
+ * @postconditions------------> None
+ * @synchronous/asynchronous--> Synchronous
+ * @reentrant/non-reentrant---> Non-Reentrant 
+ */ 
+u8 STACK_isEmpty(Stack_type *ptrStack);
+
+/**
+ * @brief---------------------> Get top element of the stack 
+ * @parameter1----------------> (ptrStack) pointer to the stack 
+ * @return--------------------> Top element
+ * @preconditions-------------> Stack is initialized
+ * @postconditions------------> None
+ * @synchronous/asynchronous--> Synchronous
+ * @reentrant/non-reentrant---> Non-Reentrant 
+ */ 
+StackEntry_type STACK_getTop(Stack_type *ptrStack);
+
+/**
+ * @brief---------------------> Get current size of the stack 
+ * @parameter1----------------> (ptrStack) pointer to the stack 
+ * @return--------------------> Current size
+ * @preconditions-------------> Stack is initialized
+ * @postconditions------------> None
+ * @synchronous/asynchronous--> Synchronous
+ * @reentrant/non-reentrant---> Non-Reentrant 
+ */ 
+u32 STACK_getCurrentSize(Stack_type *ptrStack);
+
+/**
+ * @brief---------------------> Clear stack 
+ * @parameter1----------------> (ptrStack) pointer to the stack 
+ * @return--------------------> None
+ * @preconditions-------------> Stack is initialized
+ * @postconditions------------> None
+ * @synchronous/asynchronous--> Synchronous
+ * @reentrant/non-reentrant---> Non-Reentrant 
+ */ 
+void STACK_clearStack(Stack_type *ptrStack);
+ 
+/**
+ * @brief---------------------> Traverse all elements of the stack
+ * @parameter1----------------> (ptrStack) pointer to the stack to be traversed
+ * @parameter2----------------> (ptrFunction) pointer to the function that will be performed on the stack elements
+ * @return--------------------> None
+ * @preconditions-------------> Stack is initialized
+ * @postconditions------------> None
+ * @synchronous/asynchronous--> Synchronous
+ * @reentrant/non-reentrant---> Non-Reentrant 
+ */
+void STACK_traverseStack(Stack_type *ptrStack,void (*ptrFunction)(StackEntry_type));
 
 #endif
