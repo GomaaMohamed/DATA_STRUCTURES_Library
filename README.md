@@ -9,8 +9,8 @@
 ```
 >> To use this library in your C project, simply download the source code or
    clone this repository. 
->> You can then include the header files (STACK_interface.h, QUEUE_interface.h, and LIST_interface.h)
-   in your code 
+>> You can then include the header files (STACK_interface.h, QUEUE_interface.h,
+   and LIST_interface.h) in your code 
 ```
 ## Usage
 #### To use the data structures provided by this library, follow these steps:
